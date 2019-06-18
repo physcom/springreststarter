@@ -94,7 +94,7 @@ public class AuthenticationRestControllerV1 {
 
         User user = new User(userRegisterDto.getUsername(),userRegisterDto.getName(),userRegisterDto.getUsername(),userRegisterDto.getEmail());
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(userRegisterDto.getPassword());
 
         User result = userService.register(user);
 
