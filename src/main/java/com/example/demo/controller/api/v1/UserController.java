@@ -1,4 +1,4 @@
-package com.example.demo.controller.api;
+package com.example.demo.controller.api.v1;
 
 import com.example.demo.dto.UserDto;
 import com.example.demo.model.User;
@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/v1/users/")
-public class UserControllerApiV1 {
+public class UserController {
 
     private final UserService userService;
 
     @Autowired
-    public UserControllerApiV1(UserService userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 

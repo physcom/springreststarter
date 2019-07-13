@@ -1,4 +1,4 @@
-package com.example.demo.controller.api;
+package com.example.demo.controller.api.v1;
 
 import com.example.demo.dto.ApiResponse;
 import com.example.demo.dto.AuthenticationRequestDto;
@@ -30,7 +30,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping(value = "/api/v1/auth/")
-public class AuthenticationRestControllerV1 {
+public class AuthenticationRestController {
 
     private final AuthenticationManager authenticationManager;
 
@@ -43,7 +43,7 @@ public class AuthenticationRestControllerV1 {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthenticationRestControllerV1(
+    public AuthenticationRestController(
             AuthenticationManager authenticationManager,
             JwtTokenProvider jwtTokenProvider,
             UserService userService,

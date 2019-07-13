@@ -1,4 +1,4 @@
-package com.example.demo.controller.api;
+package com.example.demo.controller.api.v1;
 
 import com.example.demo.dto.AdminUserDto;
 import com.example.demo.model.User;
@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/v1/admin/")
-public class AdminControllerApiV1 {
+public class AdminController {
 
     private final UserService userService;
 
-    public AdminControllerApiV1(UserService userService) {
+    public AdminController(UserService userService) {
         this.userService = userService;
     }
 
