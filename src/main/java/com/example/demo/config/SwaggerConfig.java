@@ -20,15 +20,16 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.example.kundoluk.controller.api.V1"))
-                .paths(PathSelectors.any())
+                .apis(RequestHandlerSelectors.basePackage("com.example.demo.controller.api.V1"))
+                .paths(PathSelectors.ant("/api/*"))
                 .build()
-                .apiInfo(apiInfo());
+                .apiInfo(apiInfo())
+                .useDefaultResponseMessages(false);
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfo(
-                "102 REST API",
+                "TELE MEDICINE REST API",
                 "Some custom description of API.",
                 "API TOS",
                 "Terms of service",

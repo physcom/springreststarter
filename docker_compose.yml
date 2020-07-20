@@ -1,0 +1,29 @@
+---
+version: '3'
+services:
+  postgres:
+    image: ${POSTGRES_IMAGE:-postgres:11}
+    ports:
+      - 127.0.0.1:5432:5432
+    environment:
+      - POSTGRES_DB=tele_medicine
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    hostname: "rabbit"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    labels:
+      NAME: "rabbitmq"
+    volumes:
+      - ./rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
+  Redis:
+    image: sameersbn/redis:4.0.9-3
+    ports:
+      - "6379:6379"
+    volumes:
+      - /srv/docker/redis:/var/lib/redis
+    restart: always
+

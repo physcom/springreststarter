@@ -1,8 +1,14 @@
-HELP.md
-target/
+/target/
 !.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**
-!**/src/test/**
+**/application-dev.properties*
+
+
+/app/src/main/resources/public
+
+node_modules/
+node/
+
+.mvn/wrapper/
 
 ### STS ###
 .apt_generated
@@ -21,11 +27,11 @@ target/
 
 ### NetBeans ###
 /nbproject/private/
+/build/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
 
-### VS Code ###
-.vscode/
+## local
+**/application-*.properties

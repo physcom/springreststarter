@@ -1,5 +1,7 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.dto.user.UserDto;
+import com.example.demo.dto.user.UserUpdateDto;
 import com.example.demo.model.Role;
 import com.example.demo.model.User;
 import com.example.demo.repository.RoleRepository;
@@ -10,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +48,21 @@ public class UserServiceImpl implements UserService {
         LOGGER.info("IN register - user: {} successfully registered", registeredUser.getUsername());
 
         return registeredUser;
+    }
+
+    @Override
+    public User update(User user, UserUpdateDto userDto) {
+        user.setUsername(user.getUsername());
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+
+        if (StringUtils.isEmpty(userDto.getPassword()))
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (userDto.getRoleIds().size()!=0){
+            List<Role> roles = roleRepository.findAllByIdIn(userDto.getRoleIds());
+            user.setRoles(roles);
+        }
+        return userRepository.save(user);
     }
 
     @Override
