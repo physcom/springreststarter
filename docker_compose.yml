@@ -20,10 +20,11 @@ services:
     volumes:
       - ./rabbitmq-isolated.conf:/etc/rabbitmq/rabbitmq.config
   Redis:
-    image: sameersbn/redis:4.0.9-3
-    ports:
-      - "6379:6379"
+    image: redis:alpine
     volumes:
-      - /srv/docker/redis:/var/lib/redis
-    restart: always
+      - redisdata:/data
+    ports:
+      - "6382:6379"
+    networks:
+      - app-network
 
