@@ -1,0 +1,29 @@
+/*** Role ***/
+CREATE TABLE IF NOT EXISTS roles (
+  id         BIGSERIAL PRIMARY KEY,
+  created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL,
+  updated_at TIMESTAMP WITHOUT TIME ZONE,
+  title VARCHAR(255) UNIQUE,
+  code VARCHAR(255) UNIQUE
+);
+
+/*** User ***/
+CREATE TABLE IF NOT EXISTS users (
+  id         BIGSERIAL PRIMARY KEY,
+  created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL,
+  updated_at TIMESTAMP WITHOUT TIME ZONE,
+  username VARCHAR(255) UNIQUE,
+  password VARCHAR(255),
+  email VARCHAR(255),
+  phone VARCHAR(255),
+  ssn VARCHAR(255),
+  first_name VARCHAR(255),
+  last_name VARCHAR(255),
+  enabled BOOLEAN DEFAULT TRUE
+);
+
+/*** User - Role ***/
+CREATE TABLE IF NOT EXISTS user_roles (
+  user_id BIGINT REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE ,
+  role_id BIGINT REFERENCES roles (id) ON UPDATE CASCADE ON DELETE CASCADE
+);
