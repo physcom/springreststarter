@@ -1,7 +1,7 @@
-package io.qtechdigital.onlineTutoring.security;
+package io.qtechdigital.onlineTutoring.security.jwt;
 
+import io.qtechdigital.onlineTutoring.exception.ResourceNotFoundException;
 import io.qtechdigital.onlineTutoring.repository.UserRepository;
-import io.qtechdigital.onlineTutoring.security.jwt.JwtUserFactory;
 import io.qtechdigital.onlineTutoring.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
@@ -26,11 +29,21 @@ public class JwtUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
 
-        User user = userRepository.findByUsername(s);
+        Optional<User> user = userRepository.findByEmail(s);
 
-        if (user == null) {
+        if (!user.isPresent()) {
             throw new UsernameNotFoundException("User with username: " + s + " not found");
         }
+
+        LOGGER.info("user loaded: {}", user.get().getEmail());
+        return JwtUserFactory.create(user.get());
+    }
+
+    @Transactional
+    public UserDetails loadUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("User", "id", id)
+        );
 
         return JwtUserFactory.create(user);
     }

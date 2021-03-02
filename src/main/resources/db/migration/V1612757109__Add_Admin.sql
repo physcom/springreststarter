@@ -14,15 +14,16 @@ INSERT INTO roles (created_at, title, code)
 VALUES (now(), 'STUDENT ROLE', 'ROLE_STUDENT');
 
 /* Admin User */
-INSERT INTO users (created_at, username, password, first_name, last_name, email, enabled)
+INSERT INTO users (created_at, password, first_name, last_name, email, enabled, auth_provider)
 values (
     now(),
-   'admin',
    crypt('123456', gen_salt('bf', 8)),
    'Admin',
    'Online tutors',
-   'support@qtechdigital.com',
-   true);
+   'admin@qtechdigital.com',
+   true,
+   0
+);
 
 
 /* Admin User and Role*/
@@ -33,5 +34,5 @@ SELECT
 FROM
   users u, roles r
 WHERE
-  u.username='admin'
-  AND r.code='ROLE_ADMIN';
+  u.email='admin@qtechdigital.com'
+  AND r.code='ROLE_SUPER_ADMIN';

@@ -8,10 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -21,10 +23,10 @@ public class UserServiceImpl implements UserService {
     private final static Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -35,7 +37,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User registeredUser = userRepository.save(user);
 
-        LOGGER.info("IN register - user: {} successfully registered", registeredUser.getUsername());
+        LOGGER.info("IN register - user: {} successfully registered", registeredUser.getEmail());
 
         return registeredUser;
     }
@@ -43,7 +45,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(User user, UserUpdateDto userDto) {
 
-        user.setUsername(user.getUsername());
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
 
@@ -61,20 +62,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
     }
 
     @Transactional(readOnly = true)
     @Override
     public User findById(Long id) {
         return userRepository.findById(id).orElse(null);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public boolean existByUsername(String username) {
-        return userRepository.existsByUsername(username);
     }
 
     @Transactional(readOnly = true)

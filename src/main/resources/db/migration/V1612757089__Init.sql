@@ -12,14 +12,16 @@ CREATE TABLE IF NOT EXISTS users (
   id         BIGSERIAL PRIMARY KEY,
   created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL,
   updated_at TIMESTAMP WITHOUT TIME ZONE,
-  username VARCHAR(255) UNIQUE,
+  email VARCHAR(255) UNIQUE,
   password VARCHAR(255),
-  email VARCHAR(255),
   phone VARCHAR(255),
-  ssn VARCHAR(255),
+  image_url VARCHAR(255),
+  auth_provider SMALLINT,
+  provider_id VARCHAR(255),
+  email_verified  BOOLEAN DEFAULT FALSE,
   first_name VARCHAR(255),
   last_name VARCHAR(255),
-  enabled BOOLEAN DEFAULT TRUE
+  enabled BOOLEAN DEFAULT FALSE
 );
 
 /*** User - Role ***/

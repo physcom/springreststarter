@@ -43,8 +43,6 @@ public class UserMapperImpl implements UserMapper {
         userSimplifiedDto.setEmail(user.getEmail());
         userSimplifiedDto.setLastName(user.getLastName());
         userSimplifiedDto.setFirstName(user.getFirstName());
-        userSimplifiedDto.setUsername(user.getUsername());
-        userSimplifiedDto.setSsn(user.getSsn());
         return userSimplifiedDto;
     }
 }

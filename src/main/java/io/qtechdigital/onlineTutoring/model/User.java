@@ -1,11 +1,15 @@
 package io.qtechdigital.onlineTutoring.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.qtechdigital.onlineTutoring.model.base.TimedEntity;
+import io.qtechdigital.onlineTutoring.model.enums.AuthProvider;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
@@ -17,29 +21,33 @@ public class User extends TimedEntity {
 
     private static final long serialVersionUID = 8126147538659380139L;
 
-    @Column(name = "username")
-    private String username;
-
-    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "email")
+    @Email
+    @Column(nullable = false)
     private String email;
 
-    @Column(name = "ssn")
-    private String ssn;
+    private String imageUrl;
 
-    @Column(name = "password")
+    @Column(nullable = false)
+    private Boolean emailVerified = false;
+
+    @JsonIgnore
     private String password;
 
-    @Column(name = "phone")
     private String phone;
 
     @Column(columnDefinition = "boolean default false")
     private boolean enabled;
+
+    @NotNull
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "auth_provider")
+    private AuthProvider provider;
+
+    private String providerId;
 
     @ManyToMany
     @JoinTable(name = "user_roles",
@@ -51,8 +59,7 @@ public class User extends TimedEntity {
 
     }
 
-    public User(String username, String firstName, String lastName, String email) {
-        this.username = username;
+    public User(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

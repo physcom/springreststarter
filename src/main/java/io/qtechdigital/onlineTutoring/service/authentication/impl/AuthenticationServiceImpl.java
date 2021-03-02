@@ -18,8 +18,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void authenticate(AuthenticationRequestDto requestDto) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDto.getUsername(), requestDto.getPassword().trim()));
+    public Authentication authenticate(AuthenticationRequestDto requestDto) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword().trim()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        return authentication;
     }
 }

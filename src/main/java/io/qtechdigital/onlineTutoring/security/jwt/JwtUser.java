@@ -3,43 +3,41 @@ package io.qtechdigital.onlineTutoring.security.jwt;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Spring Security wrapper for class .
  */
 
-public class JwtUser implements UserDetails {
+public class JwtUser implements OAuth2User, UserDetails {
 
     private final Long id;
-    private final String username;
     private final String firstName;
     private final String lastName;
     private final String password;
     private final String email;
     private final boolean enabled;
-    private final LocalDateTime lastPasswordResetDate;
+    private Map<String, Object> attributes;
     private final Collection<? extends GrantedAuthority> authorities;
 
     public JwtUser(Long id,
-                   String username,
                    String firstName,
                    String lastName,
                    String password,
                    String email,
                    boolean enabled,
-                   LocalDateTime lastPasswordResetDate,
-                   Collection<? extends GrantedAuthority> authorities) {
+                   Collection<? extends GrantedAuthority> authorities
+    ) {
         this.id = id;
-        this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.email = email;
         this.enabled = enabled;
-        this.lastPasswordResetDate = lastPasswordResetDate;
         this.authorities = authorities;
     }
 
@@ -50,7 +48,7 @@ public class JwtUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @JsonIgnore
@@ -95,12 +93,21 @@ public class JwtUser implements UserDetails {
     }
 
     @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(Map<String, Object> attributes) {
+        this.attributes = attributes;
+    }
+
+    @Override
     public boolean isEnabled() {
         return enabled;
     }
 
-    @JsonIgnore
-    public LocalDateTime getLastPasswordResetDate() {
-        return lastPasswordResetDate;
+    @Override
+    public String getName() {
+        return String.valueOf(id);
     }
 }

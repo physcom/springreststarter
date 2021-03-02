@@ -1,9 +1,11 @@
 package io.qtechdigital.onlineTutoring.controller.api.v1;
 
+import io.qtechdigital.onlineTutoring.dto.auth.AuthResponse;
 import io.qtechdigital.onlineTutoring.dto.auth.AuthenticationRequestDto;
 import io.qtechdigital.onlineTutoring.dto.user.request.UserRegisterRequest;
 import io.qtechdigital.onlineTutoring.dto.auth.AuthenticatedUserDto;
 import io.qtechdigital.onlineTutoring.endpoint.authentication.AuthenticationEndpoint;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
