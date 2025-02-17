@@ -1,18 +1,21 @@
 package com.example.demo.config;
 
 import com.example.demo.security.JwtUserDetailsService;
-import com.example.demo.security.jwt.JwtConfigurer;
-import com.example.demo.security.jwt.JwtTokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.security.jwt.JwtTokenFilter;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -24,24 +27,22 @@ import java.util.Collections;
  * Security configuration class for JWT based Spring Security application.
  */
 
+@AllArgsConstructor
 @Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenFilter jwtTokenFilter;
     private final JwtUserDetailsService jwtUserDetailsService;
-    private final PasswordEncoder passwordEncoder;
 
     private static final String ADMIN_ENDPOINT = "/api/v1/admin/**";
     private static final String AUTH_ENDPOINT = "/api/v1/auth/**";
 
-    @Autowired
-    public SecurityConfig(
-            JwtTokenProvider jwtTokenProvider,
-            JwtUserDetailsService jwtUserDetailsService,
-            PasswordEncoder passwordEncoder) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.jwtUserDetailsService = jwtUserDetailsService;
-        this.passwordEncoder = passwordEncoder;
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -50,15 +51,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
                 .userDetailsService(jwtUserDetailsService)
-                .passwordEncoder(passwordEncoder);
+                .passwordEncoder(passwordEncoder());
     }
 
+
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/v2/api-docs",
                 "/configuration/ui",
                 "/swagger-resources",
@@ -79,8 +82,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(AUTH_ENDPOINT).permitAll()
                 .antMatchers(ADMIN_ENDPOINT).hasRole("ADMIN")
                 .anyRequest().authenticated()
-                .and()
-                .apply(new JwtConfigurer(jwtTokenProvider));
+                .and();
+
+        // Add our custom Token based authentication filter
+        http
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean

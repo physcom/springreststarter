@@ -1,6 +1,5 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.dto.user.UserDto;
 import com.example.demo.dto.user.UserUpdateDto;
 import com.example.demo.model.Role;
 import com.example.demo.model.User;
@@ -10,7 +9,6 @@ import com.example.demo.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -24,13 +22,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
+
     }
 
     @Override
@@ -40,7 +37,7 @@ public class UserServiceImpl implements UserService {
         userRoles.add(roleUser);
 
         user.setUsername(user.getUsername());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(user.getPassword());
         user.setRoles(userRoles);
 
         User registeredUser = userRepository.save(user);
@@ -57,8 +54,8 @@ public class UserServiceImpl implements UserService {
         user.setLastName(userDto.getLastName());
 
         if (StringUtils.isEmpty(userDto.getPassword()))
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        if (userDto.getRoleIds().size()!=0){
+            user.setPassword(user.getPassword());
+        if (!userDto.getRoleIds().isEmpty()){
             List<Role> roles = roleRepository.findAllByIdIn(userDto.getRoleIds());
             user.setRoles(roles);
         }

@@ -1,17 +1,20 @@
 package com.example.demo.security.jwt;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 
 /**
  * Spring Security wrapper for class .
  */
 
+@Getter
+@Setter
 public class JwtUser implements UserDetails {
 
     private final Long id;
@@ -49,11 +52,6 @@ public class JwtUser implements UserDetails {
         return id;
     }
 
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
     @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
@@ -70,18 +68,6 @@ public class JwtUser implements UserDetails {
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
-    }
-
-    public String getFirstname() {
-        return firstName;
-    }
-
-    public String getLastname() {
-        return lastName;
-    }
-
-    public String getEmail() {
-        return email;
     }
 
     @JsonIgnore

@@ -7,23 +7,25 @@ import com.example.demo.endpoint.authentication.AuthenticationEndpoint;
 import com.example.demo.exception.AlreadyExistException;
 import com.example.demo.mapper.user.UserMapper;
 import com.example.demo.model.User;
-import com.example.demo.security.jwt.JwtTokenProvider;
+import com.example.demo.security.jwt.JwtUtil;
 import com.example.demo.service.UserService;
 import com.example.demo.service.authentication.AuthenticationService;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class AuthenticationEndpointImpl implements AuthenticationEndpoint {
 
     private final UserService userService;
     private final AuthenticationService authenticationService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtUtil jwtUtil;
     private final UserMapper userMapper;
 
-    public AuthenticationEndpointImpl(UserService userService, AuthenticationService authenticationService, JwtTokenProvider jwtTokenProvider, UserMapper userMapper) {
+    public AuthenticationEndpointImpl(UserService userService, AuthenticationService authenticationService, JwtUtil jwtUtil, UserMapper userMapper) {
         this.userService = userService;
         this.authenticationService = authenticationService;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtUtil = jwtUtil;
         this.userMapper = userMapper;
     }
 
@@ -31,7 +33,8 @@ public class AuthenticationEndpointImpl implements AuthenticationEndpoint {
     public AuthenticatedUserDto authenticate(AuthenticationRequestDto requestDto) {
         authenticationService.authenticate(requestDto);
         User user = userService.findByUsername(requestDto.getUsername().trim());
-        String token = jwtTokenProvider.createToken(requestDto.getUsername(), user.getRoles());
+
+        String token = jwtUtil.createToken(requestDto.getUsername(), user.getRoles());
         return userMapper.toAuthenticatedUserDto(user, token);
     }
 
@@ -47,7 +50,12 @@ public class AuthenticationEndpointImpl implements AuthenticationEndpoint {
         user.setPassword(userRegisterDto.getPassword());
 
         User result = userService.register(user);
-        String token = jwtTokenProvider.generateToken(result);
+        String token = jwtUtil.createToken(result.getUsername(), result.getRoles());
         return userMapper.toAuthenticatedUserDto(user, token);
+    }
+
+    @Override
+    public AuthenticatedUserDto refreshToken(HttpServletRequest request) {
+        return null;
     }
 }

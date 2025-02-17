@@ -4,6 +4,7 @@ import com.example.demo.dto.AuthenticationRequestDto;
 import com.example.demo.dto.user.UserRegisterDto;
 import com.example.demo.dto.auth.AuthenticatedUserDto;
 import com.example.demo.endpoint.authentication.AuthenticationEndpoint;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,5 +34,10 @@ public class AuthenticationRestController {
     @PostMapping("register")
     public AuthenticatedUserDto register(@RequestBody UserRegisterDto userRegisterDto) {
         return authenticationEndpoint.register(userRegisterDto);
+    }
+
+    @PostMapping("refresh-token")
+    public AuthenticatedUserDto refreshToken(HttpServletRequest request) {
+        return authenticationEndpoint.refreshToken(request);
     }
 }

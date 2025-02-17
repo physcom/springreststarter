@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.user.UserDto;
 import com.example.demo.dto.user.UserUpdateDto;
 import com.example.demo.model.User;
 
